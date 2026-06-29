@@ -1,0 +1,15 @@
+{
+  "name": "playwright-task",
+  "version": "1.0.0",
+  "description": "Technical interview practice: debug, enhance, and add CI to a Playwright suite.",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}
