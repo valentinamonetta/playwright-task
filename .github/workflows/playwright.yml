@@ -1,0 +1,48 @@
+name: Playwright Tests
+
+# TRIGGER — when does this run? Both: pushes to main, and any PR targeting main
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# JOBS — one job called "test", running on a fresh Ubuntu cloud machine
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # STEPS — the ordered list, exactly the six you named
+    steps:
+      # 1. Get your code onto the blank runner
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Install Node (pinned version = CI matches your dev setup)
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 3. Install dependencies — npm ci = clean, lockfile-exact, reproducible
+      - name: Install dependencies
+        run: npm ci
+
+      # 4. Install Playwright browsers (+ their OS libs). The package != the browsers.
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      # 5. Run the suite. CI=true is set automatically here, so your
+      #    retries: process.env.CI ? 1 : 0 fires the "1" branch.
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      # 6. Upload the HTML report so failures are diagnosable after the run.
+      #    if: always() = upload even when tests fail (that's exactly when you need it).
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
